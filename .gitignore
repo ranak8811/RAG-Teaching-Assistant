@@ -1,0 +1,38 @@
+# IDE and OS specific files
+.idea/
+.vscode/
+.DS_Store
+.Trashes
+Thumbs.db
+
+# Python virtual environment
+/rag_env/
+
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+dist/
+eggs/
+*.egg
+*.egg-info
+
+# Environment variables
+# Ignores the .env file specifically within the 'server' directory.
+server/.env
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Frontend dependencies (if you use a JS framework in 'client/')
+# client/node_modules/

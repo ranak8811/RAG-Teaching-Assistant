@@ -21,7 +21,8 @@ def authenticate(credentials: HTTPBasicCredentials=Depends(security)):
     return {
         "username": user_record["username"],
         "fullname": user_record["fullname"],
-        "email": user_record["email"]
+        "email": user_record["email"],
+        "role": user_record["role"],
     }
 
 
@@ -41,6 +42,7 @@ def signup_student(req: StudentUser):
                 "email": req.email,
                 "username": req.username,
                 "password": hashed_password,
+                'role': 'Student',
                 "grade": req.grade,
                 "school": req.school,
             }
@@ -70,6 +72,7 @@ def signup_teacher(req: TeacherUser):
                 "email": req.email,
                 "username": req.username,
                 "password": hashed_password,
+                'role': 'Teacher',
                 "school": req.school,
             }
         )

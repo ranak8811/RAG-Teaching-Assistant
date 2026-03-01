@@ -36,3 +36,5 @@ server/.env
 
 # Frontend dependencies (if you use a JS framework in 'client/')
 # client/node_modules/
+
+upload_docs

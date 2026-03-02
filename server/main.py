@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from server.auth.route import router as auth_router
 from server.docs.route import router as docs_router
+from server.chat.route import router as chat_router
 
 app = FastAPI()
 
 app.include_router(auth_router)
 app.include_router(docs_router)
+app.include_router(chat_router)
 
 @app.get('/')
 def home():
-    return {"message": "Hello World"}
+    return {"message": "RAG Teaching Assistant is up and running..."}

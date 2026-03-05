@@ -1,40 +1,39 @@
-# IDE and OS specific files
-.idea/
-.vscode/
-.DS_Store
-.Trashes
-Thumbs.db
+# Environment variables
+.env
+.env.local
 
-# Python virtual environment
-/rag_env/
-
-# Python compiled files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-
-# Distribution / packaging
 .Python
-build/
+*.egg-info/
 dist/
-eggs/
-*.egg
-*.egg-info
+build/
+.venv/
+venv/
+ENV/
 
-# Environment variables
-# Ignores the .env file specifically within the 'server' directory.
-server/.env
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Logs and databases
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.tox/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
-*.sqlite3
-*.db
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Frontend dependencies (if you use a JS framework in 'client/')
-# client/node_modules/
 
 upload_docs

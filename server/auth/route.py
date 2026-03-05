@@ -3,7 +3,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pymongo.errors import PyMongoError
 import logging
 from .model import TeacherUser, StudentUser
-from server.config.db import users_collection
+from config.db import users_collection
 from .hash_utils import hash_password, verify_password
 
 logger = logging.getLogger(__name__)
@@ -86,4 +86,4 @@ def signup_teacher(req: TeacherUser):
 
 @router.get("/login")
 def login(user=Depends(authenticate)):
-    return {"message": f"Login successful, welcome {user}"}
+    return {"message": f"Login successful, welcome {user['username']}!, you are a {user['role']}", "role": user['role']}

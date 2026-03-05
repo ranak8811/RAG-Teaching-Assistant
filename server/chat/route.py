@@ -1,14 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends, Body
-from server.auth.route import authenticate
-from server.chat.chat_query import answer_query, generate_quiz
+from auth.route import authenticate
+from chat.chat_query import answer_query, generate_quiz
 import datetime
-from server.config.db import (
+from config.db import (
     chat_history_collection,
     quizzes_collection,
     quiz_history
 )
 from bson.objectid import ObjectId
-from server.chat.model import QuizRequest, QuizAnswerRequest
+from chat.model import QuizRequest, QuizAnswerRequest
 
 router=APIRouter()
 

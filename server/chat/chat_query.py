@@ -5,7 +5,7 @@ from pinecone import Pinecone
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
-from server.config.db import chunk_collection
+from config.db import chunk_collection
 
 load_dotenv()
 

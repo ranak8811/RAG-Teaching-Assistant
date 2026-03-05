@@ -50,8 +50,30 @@ If relevant, mention the document source.
 """
 )
 
+quiz_prompt=PromptTemplate.from_template(
+    """
+        You are a test-generating assistant.
+
+        Using the context below, generate {num_questions}
+        multiple-choice questions.
+
+        Format STRICTLY as:
+
+        Question 1: ...
+        A) ...
+        B) ...
+        C) ...
+        Correct Answer: A
+
+        Context:
+        {context}
+    """
+)
+
+
 # 5. Define RAG chain
 rag_chain = rag_prompt | llm
+quiz_chain = quiz_prompt | llm
 
 # 6. Define chat function
 async def answer_query(query: str, user_role: str, user_grade: int) -> dict:
@@ -117,5 +139,72 @@ async def answer_query(query: str, user_role: str, user_grade: int) -> dict:
 
     return {
         'answer': answer_text,
+        'sources': sources
+    }
+
+# 6. Define quiz generation function
+async def generate_quiz(topic: str, user_role: str, user_grade: int, num_questions: int = 3) -> dict:
+    # 1. Embedding generation
+    embedding = await asyncio.to_thread(embed_model.embed_query, topic)
+
+    # 2. Retrieve relevant embedding from vector database
+    results = await asyncio.to_thread(
+        index.query, 
+        vector=embedding, 
+        top_k=5,
+        include_metadata=True,
+        filter={
+            # "grade": user_grade,   # it is to check for exact grade
+            "grade": {"$lte": user_grade},
+            'role': {"$in": ['Public', user_role]}
+        }
+    )
+
+    # 3. Validation check
+    if not results.get('matches'):
+        return {
+            'quiz': 'No relevant documents found to generate quiz.',
+            'sources': []
+        }
+    
+    # 4. Retrieve context form mongodb
+
+    # 4.1 Get chunk ids
+    chunk_ids = [m['id'] for m in results['matches']]
+
+    # 4.2 Get document/text
+    docs = list(chunk_collection.find({'chunk_id': {'$in': chunk_ids}}))
+
+    # 4.3 validation check
+    if not docs:
+        return {
+            'quiz': 'Context unavailable to generate quiz.',
+            'sources': []
+        }
+    
+    # 4.4 Preserve context order
+    # 4.4.1
+    doc_map = {d['chunk_id']: d for d in docs}
+    ordered_map = [doc_map[cid] for cid in chunk_ids if cid in doc_map]
+
+    # 4.4.2
+    context = '\n\n\n'.join(d['text'] for d in ordered_map)
+    sources = list({d['source'] for d in ordered_map})
+
+    # 4.5 Gather response
+    response = await asyncio.to_thread(
+        quiz_chain.invoke,
+        {'num_questions': num_questions, 'context': context}
+    )
+
+    # 5 Get proper answer
+    quiz_text = (
+        response.content
+        if hasattr(response, 'content')
+        else str(response)
+    )
+
+    return {
+        'quiz': quiz_text,
         'sources': sources
     }
